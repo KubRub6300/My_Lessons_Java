@@ -1,0 +1,4 @@
+id,first_name,last_name,gender,email,date_of_birth,bicycle_id,id,make,type,price
+1,Franciskus,Huddles,Male,fhuddles1@webmd.com,2023-03-27,1,1,Stels,300,10000.00
+4,Bobbie,Lacelett,Male,blacelett4@cnet.com,2023-12-25,2,2,Stels,400,12000.00
+8,Gian,Cavnor,Male,gcavnor8@cbc.ca,2023-07-05,3,3,Stels,500,16000.00

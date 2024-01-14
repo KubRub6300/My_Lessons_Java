@@ -1,0 +1,212 @@
+Команды для SQL Shell (psql)
+\l – посмотреть существующие БД
+\c <название БД> – подключение к БД
+\conninfo – информация о подключении
+\q – закрыть sql shell
+\! cls - отчистит консоль
+
+\copy (SELECT * FROM employee JOIN bicycle ON employee.bicycle_id = bicycle.id)
+TO 'C:/Users/danil/IdeaProjects/My_Lessons_Java/src/DataBase/employee_bicycle'
+DELIMITER ',' CSV HEADER;   – экспорт данных в файл employee_bicycle в формате CSV. DELIMITER - разделитель. HEADER -
+говорит о том, что названия столбцов тоже будут сохранены.
+
+
+Команды
+create DATABASE MyLessonsJava;      – создаёт новую бд MyLessonsJava
+
+DROP DATABASE MyLessonsJava;        – удаляет бд MyLessonsJava
+
+CREATE TABLE <Название таблицы> (
+    <название столбца> <тип данных> <остальные параметры>,
+    <название столбца> <тип данных> <остальные параметры>,
+    ...
+    <название столбца> <тип данных> <остальные параметры>
+);                                  – шаблон создания таблицы
+
+CREATE TABLE employee (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    first_name VARCHAR (50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    gender VARCHAR(6) NOT NULL,
+    email VARCHAR(150),
+    date_of_birth DATE NOT NULL
+);                                  – создаёт новую таблицу employee
+                                    NOT NULL - запрещает оставлять столбец пустым
+                                    PRIMARY KEY - первичный ключ
+
+
+DROP TABLE employee                 - удаляет таблицу employee
+
+
+
+
+
+
+INSERT INTO <Название таблицы>(
+    <Название поля>,
+    <Название поля>,
+    ...
+    <Название поля>
+)
+VALUES (<Значение поля>, <Значение поля>, ... <Значение поля>);         – шаблон добавления элементов в таблицу
+
+insert into employee (
+    first_name,
+    last_name,
+    gender,
+    email,
+    date_of_birth
+)
+values ('Katharyn', 'Girkins', 'Female', null, '2023-07-13');           – заполнение таблицы employee
+
+
+SELECT <*/название столбца/ов> FROM <Название таблицы>;                 – выбор данных из таблицы
+                                                                        * - выбор всех данных/ название столбца/ов - выбор данных из этих столбцов
+
+SELECT first_name, last_name FROM employee;                             – выбор имён и фамилий из таблицы employee
+
+SELECT <*/название столбца/ов> FROM <Название таблицы>
+ORDER BY <название столбца по которому нужно отсортировать> ASC/DESC;   – выбор данных из таблицы с сортировкой по столбцу
+                                                                        ASC/DESC - возрастающий/убывающий порядок сортировки.
+
+SELECT * FROM employee ORDER BY date_of_birth DESC;                     – выбор всех данных из таблицы employee отсортированных по столбцу с датой рождения в обратном порядке
+
+SELECT DISTINCT <*/название столбца/ов> FROM <Название таблицы>;        – выбор не данных с исключением повторений
+
+SELECT DISTINCT gender FROM employee ORDER BY gender ASC;               – выбор всех не повторяющихся полов в таблице employee отсортированных по столбцу gender в возрастающем порядке
+
+SELECT <*/название столбца/ов> FROM <Название таблицы> WHERE <условие>; – выбор данных из таблицы удовлетворяющих условию
+
+SELECT * FROM employee WHERE gender = 'Female';                         – выбор всех данных из таблицы employee у которых поле gender = Female (девушка)
+
+SELECT * FROM employee
+WHERE gender = 'Female' and date_of_birth > '2023-07-12';               – выбор всех женщин родившихся после 2023-07-12 из таблицы employee
+
+SELECT * FROM employee
+WHERE gender = 'Female' OR date_of_birth > '2023-07-12';                – выбор всех женщин или родившихся после 2023-07-12 из таблицы employee
+
+SELECT <*/название столбца/ов> FROM <Название таблицы>
+limit <кол-во элементов>;                                               – выбор определённого количества элементов таблицы
+
+SELECT <*/название столбца/ов> FROM <Название таблицы>
+OFFSET <до какого элемента пропустить>                                  – выбор элементов с пропуском определённого кол-ва элементов в начале (сдвигом)
+
+SELECT <*/название столбца/ов> FROM <Название таблицы>
+OFFSET <до какого элемента пропустить>
+FETCH FIRST <кол-во строк> ROWS ONLY;                                   – выбор элементов с пропуском определённого кол-ва элементов в начале (сдвигом) и определённое кол-во строк
+
+SELECT * FROM employee OFFSET 3 FETCH FIRST 4 ROWS ONLY;                – выведет 4-7 строки в таблице employee
+SELECT * FROM employee OFFSET 3 limit 4;                                – выведет 4-7 строки в таблице employee
+
+SELECT * FROM employee
+WHERE date_of_birth IN ('2023-03-27','2023-03-09');                     – выдаёт список всех сотрудников у кого ДР '2023-03-27' или '2023-03-09' из таблицы employee
+
+SELECT * FROM employee
+WHERE date_of_birth BETWEEN '2023-03-27' AND '2023-12-09';              – выдаёт список сотрудников у кго ДР между '2023-03-27' и '2023-12-09' из таблицы employee
+
+SELECT * FROM employee WHERE email LIKE '%.com';                        – выдаёт список всех сотрудников у кого значение в столбике с почтой заканчивается на .com
+                                                                        % - означает, что на его месте может стоять любое кол-во любых символов
+
+SELECT * FROM employee WHERE first_name iLIKE 'g%';                     – выдаёт всех сотрудников у кого имя начинается на букву g.
+                                                                        iLIKE игнорирует размер букв (ему не важно прописные или строчные), в этом отличие от LIKE
+
+SELECT gender, COUNT(*) FROM employee GROUP BY gender;                  – выдаёт список полов и количество записей с каждым полом
+
+SELECT gender, COUNT(*) FROM employee GROUP BY gender
+HAVING COUNT(*) > 8;                                                    – выдаёт список полов и количество записей с каждым полом, для полов у которых больше 8 записей
+
+SELECT first_name AS "имя", last_name AS "фамилия",
+email AS electronic_mail FROM employee;                                 – выведет список всех имён и фамилий сотрудников, при этом заменив название столбцов при выводе на те, что указаны после AS.
+                                                                        При этом в самой таблице название столбцов не меняется
+
+SELECT COALESCE(email, 'not to have') FROM employee;                    – выведет список всех почт при этом строки где нет почт заменит на not to have
+
+SELECT first_name, last_name,
+COALESCE(email, 'not to have') AS email FROM employee;                  – выведет список имён, фамилий и почт пользователей при этом поля без почты заменит на no to have
+
+SELECT COALESCE(email, 'do not have') AS email, COUNT(*)
+FROM employee GROUP BY email;                                           – выведет все почты сгруппировав одинаковые и указав их количество
+
+SELECT MAX(price) FROM holiday;                                         – максимальное значение в столбце price
+
+SELECT MIN(price) FROM holiday;                                         – минимальное значение в столбце price
+
+SELECT ROUND(AVR(price)) FROM holiday;                                  – среднее значение в столбце price округлённое до целого числа
+
+SELECT distination_country, SUM(price)
+FROM holiday GROUP BY distination_country;                              – выдаёт сумму всех путёвок для каждой странны
+
+
+
+
+SELECT NOW();                                                           – выведете нынешнюю дату и время
+
+SELECT NOW()::DATE;                                                     – выведет нынешнюю дату
+
+SELECT NOW() - INTERVAL '1 YEAR';                                       – выведете нынешнюю дату и время - 1 год
+
+SELECT NOW() + INTERVAL '15 HOURS';                                     – выведете нынешнюю дату и время + 15 часов
+
+SELECT EXTRACT(YEAR FROM NOW());                                        – выведет текущий год
+
+SELECT EXTRACT(DOW FROM NOW());                                         – выведет номер дня недели (воскресенье - 1-ый день)
+
+SELECT first_name, last_name, date_of_birth,
+AGE(NOW(), date_of_birth) FROM employee;                                – выведет имя, фамилию, день рождения и возраст сотрудников
+
+
+
+
+ALTER TABLE employee PRIMARY KEY (id);                                  – добавляет первичный ключ (поле id) в таблицу employee
+
+ALTER TABLE employee DROP CONSTRAINT employee_pkey;                     – удаляет ограничитель employee_pkey из таблицы employee
+
+
+
+ALTER TABLE employee ADD CONSTRAINT
+unique_email_address UNIQUE (email);                                    – добавляет в таблицу employee UNIQUE ограничение (поле email должно быть уникальным)
+
+ALTER TABLE employee ADD CONSTRAINT
+gender_constraint CHECK (gender = 'Female' OR gender = 'Male');         – добавляет в таблицу employee CHECK ограничение (Гендер может быть только Male или Female)
+
+
+UPDATE employee SET email = 'fhuddles1@webmd.com' WHERE id = 2;         – обновление почты у сотрудника с id = 2
+
+INSERT INTO employee (id, first_name, last_name, gender, date_of_birth)
+VALUES (1,'Danil', 'Kubarev', 'Male', DATE '2002-09-04')
+ON CONFLICT (id) DO NOTHING;                                            – попробует сделать вставку, но если произойдёт конфликт по id, то ничего не произойдёт, просто вставку не будет произведена
+
+INSERT INTO employee
+(id, first_name, last_name, email, gender, date_of_birth) VALUES
+(3,'Alfie', 'Leaning', 'aleaning3@gmail.com', 'Male', DATE '2023-08-03')
+ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;                  – попробует сделать вставку, но если произойдёт конфликт по id, то просто обновит поле email у объекта с которым произошёл конфликт
+
+
+CREATE TABLE bicycle(
+id BIGSERIAL NOT NULL PRIMARY KEY,
+make VARCHAR(100) NOT NULL,
+type VARCHAR(100)  NOT NULL,
+prcie NUMERIC(19, 2) NOT NULL
+);                                                                      – создание таблицы bicycle
+
+ALTER TABLE employee ADD bicycle_id BIGINT REFERENCES bicycle(id);      – создание внешнего ключа
+
+ALTER TABLE employee ADD UNIQUE(bicycle_id);                            – создание ограничения, поле bicycle_id должно быть уникальным
+
+ALTER TABLE bicycle RENAME COLUMN prcie TO price;
+
+SELECT * FROM employee
+JOIN bicycle ON employee.bicycle_id = bicycle.id;                       – объединение таблиц employee и bicycle с выводом данных тех работников которые внешним ключам связаны с велосипедами
+
+SELECT * FROM employee
+LEFT JOIN bicycle ON employee.bicycle_id = bicycle.id;                  – объединение таблиц employee и bicycle с выводом всех данных работников и данных о велосипедах с которыми внешним ключом связаны с велосипедами
+
+SELECT * FROM employee
+LEFT JOIN bicycle ON employee.bicycle_id = bicycle.id;                  – объединение таблиц employee и bicycle с выводом всех данных о велосипедах и данных о работниках которые внешними ключам связаны с велосипедами
+
+SELECT * FROM employee
+LEFT JOIN bicycle ON employee.bicycle_id = bicycle.id;                  – объединение таблиц employee и bicycle с выводом всех данных из обеих таблиц
+
+
+
+
