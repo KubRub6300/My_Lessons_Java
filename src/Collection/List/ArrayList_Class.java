@@ -126,6 +126,8 @@ public class ArrayList_Class {
                 "\n\n\n\n\n=================== Связанные с ArrayList методы ===================" + ANSI_RESET);
         String [] array = {"С1","С2","С3","С4","С5","С6"}; //Создание обычного массива
         List<String> list = Arrays.asList(array);//Создаёт лист связанный с массивом
+        int[] arrayInt = {1,2,3};
+
 
 
 

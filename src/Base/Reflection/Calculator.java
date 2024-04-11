@@ -43,10 +43,16 @@ public class Calculator {
     }
 
 
+    @MathOperation(name = "plus100", description = "Плюсует 100")
+    public void dsds(int a, int b) {
+        int res = a + b + 100;
+        System.out.println(res);
+    }
+
 
     /**
      * Вот так работает спринг, что-то подобное написано у него под капотом (то что снизу), а я вижу только верхнюю часть.
-     * */
+     */
     public static void main(String[] args) {
 
         Class calculatorClass = Calculator.class;
